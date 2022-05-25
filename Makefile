@@ -12,7 +12,7 @@
 
 NAME = minisynth
 
-SRCS = main_margot.c
+SRCS = main3.c
 
 OBJS = $(SRCS:.c=.o)
 
