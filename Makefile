@@ -20,7 +20,7 @@ FLAGS = -Wall -Werror -Wextra
 
 INCLUDES = -I include
 
-LIBS = -L ./libft -lft -L lib -l SDL2
+LIBS = -L ./libft -lft -L lib -lSDL2
 
 all: $(NAME)
 

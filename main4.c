@@ -3,10 +3,14 @@
 #include <stdio.h>
 #include <math.h>
 #include <unistd.h>
+#include "minisynth.h"
+
 #define PI2 6.28318530718
 
-float timee = 0;
-float freq = 440;
+float x1 = 0;
+float x2 = 0;
+float freq1 = 440;
+float freq2 = 0;
 
 void callback(void* userdata, Uint8* stream, int len) {
 	(void)userdata;
@@ -14,11 +18,14 @@ void callback(void* userdata, Uint8* stream, int len) {
 	len /= sizeof(*snd);
 	for(int i = 0; i < len; i++) //Fill array with frequencies, mathy-math stuff
 	{
-		snd[i] = 32000 * sin(timee);
+		snd[i] = 32000 * ((sin(x1) + sin(x2)) / 2);
 		
-		timee += freq * PI2 / 48000.0;
-		if(timee >= PI2)
-			timee -= PI2;
+		x1 += freq1 * PI2 / 48000.0;
+		if(x1 >= PI2)
+			x1 -= PI2;
+		x2 += freq2 * PI2 / 48000.0;
+		if(x2 >= PI2)
+			x2 -= PI2;
 	}
 }
 
@@ -47,16 +54,21 @@ int main(int argc, char ** argv)
 	/* Start playing, "unpause" */
 	SDL_PauseAudioDevice(id, 0);
 
-	while(1) //Stall for time while audio plays
+	int total_time = 0;
+	while(total_time < 8) //Stall for time while audio plays
 	{
 
     	  //Play A
-          freq = 440;
+          freq1 = get_frequency("a4");;
+          freq2 = get_frequency("c4");
           SDL_Delay(3000);
-
+		total_time += 3;
 	  //Play middle C
-          freq = 261.6256;
+          //freq1 = 261.6256;
+          freq1 = get_frequency("a5");
+		  freq2 = get_frequency("c5");
           SDL_Delay(3000);
+		  total_time += 3;
 		//sleep(1000);
 		//printf("hello\n");
           //if needed, you can do cool stuff here, like change frequency for different notes: 

@@ -16,6 +16,7 @@ void	tests(void)
 {
 	float note1 = get_frequency("a4");
 	float note2 = get_frequency("c4");
+	float note3 = get_frequency("c6");
 	//printf("get frequ b8 %f\n", get_frequency("b8"));
     SDL_Init(SDL_INIT_AUDIO);
 
@@ -27,7 +28,7 @@ void	tests(void)
     SDL_zero(audio_spec);
     audio_spec.freq = 48000;
     audio_spec.format = AUDIO_S16SYS;
-    audio_spec.channels = 2;
+    audio_spec.channels = 1;
     audio_spec.samples = 1024;
     audio_spec.callback = NULL;
 
@@ -37,13 +38,12 @@ void	tests(void)
     // pushing 3 seconds of samples to the audio buffer:
     float x = 0;
     float x2 = 0;
+    float x3 = 0;
     for (int i = 0; i < audio_spec.freq * 2; i++) {
-   
 
-        // SDL_QueueAudio expects a signed 16-bit value
-        // note: "5000" here is just gain so that we will hear something
-        int16_t sample = sin(x) * 32000;
-        int16_t sample2 = sin(x2) * 32000;
+        int16_t sample = ((sin(x) + sin(x2) + sin(x3)) / 3) * 32000;
+
+        int16_t sample2 = sin(x3) * 32000;
 
 		x += note1 * PI2 / 48000.0;
 		if(x >= PI2)
@@ -51,16 +51,21 @@ void	tests(void)
 		x2 += note2 * PI2 / 48000.0;
 		if(x2 >= PI2)
 			x2 -= PI2;
+		x3 += note3 * PI2 / 48000.0;
+		if(x3 >= PI2)
+			x3 -= PI2;
 
         const int sample_size = sizeof(int16_t) * 1;
         SDL_QueueAudio(audio_device, &sample, sample_size);
-       SDL_QueueAudio(audio_device, &sample2, sample_size);
+		(void)sample2;
+		(void)sample;
+       //SDL_QueueAudio(audio_device, &sample2, sample_size);
     }
 
     // unpausing the audio device (starts playing):
     SDL_PauseAudioDevice(audio_device, 0);
 
-    SDL_Delay(4000);
+    SDL_Delay(2000);
 
     SDL_CloseAudioDevice(audio_device);
     SDL_Quit();
@@ -132,19 +137,26 @@ void	fill_node(t_node *list, char *note, int tempo, float duration)
 int main(void) {
 	//tests();
 	t_node	*list;
+	//t_node	*list2;
 	t_node	*list_ptr;
 	t_node	*list_new;
 	int	tempo = 60;
 	char	*melody[8] = {"c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5"};
+	//char *wtfsegfault[3] = {"c4", "b5"};
+	//char	*melgrgfefewody2[9] = {"c4", "c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5"};
 	int i;
 	double duration;
 
+(void)melody;
+//(void)wtfsegfault;
 	i = 0;
 	while (i < 8)
 	{
-		duration = 1;
+		duration = 1.0;
+		/*
 		if (i % 2)
 			duration = 0.5;
+		*/
 		if (!list)
 		{
 			list = (t_node *)malloc(sizeof(t_node *));
@@ -165,6 +177,8 @@ int main(void) {
 		}
 		i++;
 	}
+
+
 	//print_list(list);
 	play_melody(list);
 	//melodious_melody->frequency = get_frequency("c4");

@@ -17,6 +17,7 @@
 # include <stdio.h>
 # include <string.h>
 # include "SDL2/SDL.h"
+//# include "SDL2/SDL_mixer.h"
 # include "../libft/libft.h"
 # define PI2 6.28318530718
 
