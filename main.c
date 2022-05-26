@@ -118,6 +118,22 @@ void	feed_to_list(t_node **head, char *note, float len)
 	}
 }
 
+void	update_octave(char	*note, int octave)
+{
+	size_t	len;
+	(void)octave;
+
+	len = strlen(note);
+	if (len == 1)
+	{
+		//*note[1] = octave + '0';
+	}
+	if ((len == 2 && note[1] == '#'))
+	{
+		note[2] = octave + '0';
+	}
+}
+
 void	read_input(char *str, int tempo, t_node **head)
 // void	read_input(char *str, int tempo)
 {
@@ -126,6 +142,12 @@ void	read_input(char *str, int tempo, t_node **head)
 	int 	j = 0;	// buffer note
 	char 	*tmp;
 	float 	len = 0.0;
+	int	octave;
+	float beat;
+
+	octave = 4;
+	beat = 1.0;
+
 
 	tmp = (char*) malloc(4);
 	if (!tmp)
@@ -133,6 +155,8 @@ void	read_input(char *str, int tempo, t_node **head)
 		printf("malloc error in read_input!\n");
 		return ;
 	}
+
+// a a4 a# a#4 a/1
 
 	int track = atoi((const char*)&str[i]);	// add data to correct list
 	while (isdigit(str[i]) != 0 || str[i] == ' ' || str[i] == ':' || str[i] == '|')
@@ -146,6 +170,9 @@ void	read_input(char *str, int tempo, t_node **head)
 			j++;
 		// printf(" >> i = %d, j = %d, ", i, j);
 		tmp = strncpy(tmp, (const char*)&str[i], (size_t)(j-i));	// copy note to tmp
+		if (tmp[1] >= '0' && tmp[1] <= '8')
+			octave = tmp[1] - '0';
+		update_octave(tmp, octave);
 		// printf("'%s', ", tmp);
 
 			// add tmp data to correct track #
@@ -155,12 +182,13 @@ void	read_input(char *str, int tempo, t_node **head)
 		if (str[i++] == '/')	// get len
 		{
 			len = atof((const char*)&str[i]);
+			beat = len;
 			while((isdigit(str[i]) != 0 || str[i] == '.'))
 				i++;
 		}
 		else
 		{
-			len = 1.0;
+			len = beat;
 		}
 		len = (60 / (float)tempo * len);	// update beats to time
 	
