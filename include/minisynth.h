@@ -16,7 +16,10 @@
 # include <math.h>
 # include <stdio.h>
 # include <string.h>
+# include <fcntl.h>
+# include <stdlib.h>
 # include "SDL2/SDL.h"
+# include <ctype.h>
 //# include "SDL2/SDL_mixer.h"
 # include "../libft/libft.h"
 # define PI2 6.28318530718
@@ -28,5 +31,6 @@ typedef struct s_node {
 }	t_node;
 
 float get_frequency(char *note);
+void	play_melody(t_node **list, int track_nb);
 
 #endif

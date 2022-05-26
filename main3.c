@@ -81,50 +81,6 @@ void	print_list(t_node *list)
 	}
 }
 
-void	play_melody(t_node *list)
-{
-	float x;
-	float	total_time;
-
-	total_time = 0;
-	SDL_Init(SDL_INIT_AUDIO);
-    // the representation of our audio device in SDL:
-    SDL_AudioDeviceID audio_device;
-
-    // opening an audio device:
-    SDL_AudioSpec audio_spec;
-    SDL_zero(audio_spec);
-    audio_spec.freq = 48000;
-    audio_spec.format = AUDIO_S16SYS;
-    audio_spec.channels = 2;
-    audio_spec.samples = 1024;
-    audio_spec.callback = NULL;
-
-    audio_device = SDL_OpenAudioDevice(NULL, 0, &audio_spec, NULL, 0);
-	
-	while (list)
-	{
-		x = 0;
-		for (int i = 0; i < audio_spec.freq * list->len; i++) {
-			int16_t sample = sin(x) * 32000;
-			x += list->frequency * PI2 / 48000.0;
-			if(x >= PI2)
-				x -= PI2;
-			const int sample_size = sizeof(int16_t) * 1;
-			SDL_QueueAudio(audio_device, &sample, sample_size);
-		}
-		total_time += list->len;
-		list = list->next;
-	}
-
-	SDL_PauseAudioDevice(audio_device, 0);
-
-	printf("total time is %f\n", total_time);
-    SDL_Delay(total_time * 1000);
-
-    SDL_CloseAudioDevice(audio_device);
-    SDL_Quit();
-}
 
 void	fill_node(t_node *list, char *note, int tempo, float duration)
 {
@@ -184,16 +140,3 @@ int main(void) {
 	//melodious_melody->frequency = get_frequency("c4");
     return 0;
 }
-
-/*
-
-60 bpm for ex
-
-wait i dont get it
-one minute is... right 60 seconds (wow im a genius)
-
-so 0.25. 1/4 of beat
-or 0.25 *
-
-
-*/

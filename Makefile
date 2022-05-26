@@ -12,7 +12,7 @@
 
 NAME = minisynth
 
-SRCS = main3.c get_frequency.c
+SRCS = main3.c get_frequency.c play_melody.c
 
 OBJS = $(SRCS:.c=.o)
 

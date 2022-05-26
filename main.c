@@ -10,12 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./src/get_next_line.h"
-#include <stdio.h>
-#include <string.h>	// strncmp
-#include <stdlib.h>	// atoi
-#include <ctype.h>	// isdigit
-#include "./include/minisynth.h"
+#include "minisynth.h"
 
 // typedef struct	s_node
 // {
@@ -26,6 +21,7 @@
 // }				t_node;
 
 // tracks triangle,sine,sine,sine,sine,sine,sine,saw,saw,saw,saw,saw,saw,sine,sine,sine,sine,sine,triangle,triangle,triangle,square,square,square,kick,snare
+
 
 int	tracks_line(char *str, int *arr)
 {
@@ -83,71 +79,6 @@ int	tracks_line(char *str, int *arr)
 // 5 kick
 // 6 snare
 
-int notes_match(char *note1, char *note2, int char_nb)
-{
-	if (strncmp(note1, note2, char_nb) == 0)
-		return (1);
-	return (0);
-}
-
-double	get_note(char *note)
-{
-	double frequency = 0.0;
-
-	if (notes_match("c", note, 1))
-		frequency = 16.35160;
-	else if (notes_match("c#", note, 2))
-		frequency = 17.32391;
-	else if (notes_match("d", note, 1))
-		frequency = 18.35405;
-	else if (notes_match("d#", note, 2))
-		frequency = 19.44544;
-	else if (notes_match("e", note, 1))
-		frequency = 20.60172;
-	else if (notes_match("f", note, 1))
-		frequency = 21.82676;
-	else if (notes_match("f#", note, 2))
-		frequency = 23.12465;
-	else if (notes_match("g", note, 1))
-		frequency = 24.49971;
-	else if (notes_match("g#", note, 2))
-		frequency = 25.95654;
-	else if (notes_match("a", note, 1))
-		frequency = 27.50000;
-	else if (notes_match("a#", note, 2))
-		frequency = 29.13524;
-	else if (notes_match("b", note, 1))
-		frequency = 30.86771;
-	return (frequency);
-}
-
-float get_frequency(char *note)
-{
-	float frequency;
-	int octave;
-	size_t len;
-
-	len = strlen(note);
-	if (strchr(note, '#'))
-	{
-		if (len == 2)
-			octave = 4;
-		else
-			octave = atoi(&note[2]);
-	}
-	else
-	{
-		if (len == 1)
-			octave = 4;
-		else
-			octave = atoi(&note[1]);
-	}
-	frequency = get_note(note) * pow(2, octave);
-	//printf("octave is %d\n", octave);
-	return (frequency);
-}
-
-
 void	fill_node(t_node *list, char *note, float len)
 {
 	list->frequency = get_frequency(note);
@@ -168,7 +99,7 @@ void	feed_to_list(t_node **head, char *note, float len)
 	// 	list = list->next;
 	if (!*head)
 	{
-		list = (t_node *)malloc(sizeof(t_node *));
+		list = (t_node *)malloc(sizeof(t_node));
 		if (!list)
 			return ;
 		*head = list;
@@ -179,7 +110,7 @@ void	feed_to_list(t_node **head, char *note, float len)
 		list_ptr = *head;
 		while (list_ptr->next)
 			list_ptr = list_ptr->next;
-		list_new = (t_node *)malloc(sizeof(t_node *));
+		list_new = (t_node *)malloc(sizeof(t_node));
 		if (!list_new)
 			return ;
 		fill_node(list_new, note, len);
@@ -231,13 +162,8 @@ void	read_input(char *str, int tempo, t_node **head)
 		{
 			len = 1.0;
 		}
-		len = ((float)tempo / 60 * len);	// update beats to time
-		if (!head[track - 1])
-		{
-			head[track - 1] = (t_node *)malloc(sizeof(t_node *));
-			if (!head[track - 1])
-				return ;
-		}
+		len = (60 / (float)tempo * len);	// update beats to time
+	
 			// printf("%p\n", head_ptr);
 			// printf("%p\n", &head_ptr[0]);
 			// printf("%p\n", *head_ptr);
@@ -266,6 +192,8 @@ void	print_list(t_node *head)
 	}
 	printf("\n");
 }
+
+
 
 void	free_list(t_node **head)
 {
@@ -317,11 +245,17 @@ int main(int argc, char **argv)
 		{
 			tracks = tracks_line(ptr, wave);
 
-			head_ptr = (t_node **) malloc(sizeof(t_node *) * tracks);
+			head_ptr = (t_node **)malloc(sizeof(t_node *) * tracks);
 			if (!head_ptr)
 			{
 				free(ptr);
 				return (0);
+			}
+			int k = 0;
+			while (k < tracks)
+			{
+				head_ptr[k] = NULL;
+				k++;
 			}
 			// printf("%p\n", head_ptr);
 			// printf("%p\n", &head_ptr[0]);
@@ -351,7 +285,6 @@ int main(int argc, char **argv)
 	// 	xx++;
 	// }
 
-	free(head_ptr);
 
 				// test printing
 	// int x = 0;
@@ -361,5 +294,8 @@ int main(int argc, char **argv)
 	// 	x++;
 	// }
 	// printf("\ntempo %d, tracks = %d\n", tempo, tracks);
+
+	play_melody(head_ptr, tracks);
+	free(head_ptr);
 	return (0);
 }
