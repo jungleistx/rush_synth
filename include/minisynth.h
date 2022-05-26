@@ -20,6 +20,12 @@
 # include "../libft/libft.h"
 # define PI2 6.28318530718
 
+typedef struct s_node {
+	float 	len;
+	float	frequency;
+	struct s_node	*next;
+}	t_node;
+
 float get_frequency(char *note);
 
 #endif
