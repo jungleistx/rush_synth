@@ -79,7 +79,7 @@ void	print_list(t_node *list)
 void	play_melody(t_node *list)
 {
 	float x;
-	int	total_time;
+	float	total_time;
 
 	total_time = 0;
 	SDL_Init(SDL_INIT_AUDIO);
@@ -114,11 +114,19 @@ void	play_melody(t_node *list)
 
 	SDL_PauseAudioDevice(audio_device, 0);
 
-	printf("total time is %d\n", total_time);
+	printf("total time is %f\n", total_time);
     SDL_Delay(total_time * 1000);
 
     SDL_CloseAudioDevice(audio_device);
     SDL_Quit();
+}
+
+void	fill_node(t_node *list, char *note, int tempo, float duration)
+{
+	list->frequency = get_frequency(note);
+	list->len = tempo / 60 * duration;
+	//printf("len is %f \n", tempo / 60 * duration);
+	list->next = NULL;
 }
 
 int main(void) {
@@ -126,20 +134,23 @@ int main(void) {
 	t_node	*list;
 	t_node	*list_ptr;
 	t_node	*list_new;
+	int	tempo = 60;
 	char	*melody[8] = {"c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5"};
-
 	int i;
+	double duration;
+
 	i = 0;
 	while (i < 8)
 	{
+		duration = 1;
+		if (i % 2)
+			duration = 0.5;
 		if (!list)
 		{
 			list = (t_node *)malloc(sizeof(t_node *));
 			if (!list)
 				return (1);
-			list->frequency = get_frequency(melody[i]);
-			list->len = 1;
-			list->next = NULL;
+			fill_node(list, melody[i], tempo, duration);
 		}
 		else
 		{
@@ -149,15 +160,26 @@ int main(void) {
 			list_new = (t_node *)malloc(sizeof(t_node *));
 			if (!list_new)
 				return (1); 
-			list_new->frequency = get_frequency(melody[i]);
-			list_new->len = 1;
-			list_new->next = NULL;
+			fill_node(list_new, melody[i], tempo, duration);
 			list_ptr->next = list_new;
 		}
 		i++;
 	}
-	print_list(list);
+	//print_list(list);
 	play_melody(list);
 	//melodious_melody->frequency = get_frequency("c4");
     return 0;
 }
+
+/*
+
+60 bpm for ex
+
+wait i dont get it
+one minute is... right 60 seconds (wow im a genius)
+
+so 0.25. 1/4 of beat
+or 0.25 *
+
+
+*/
