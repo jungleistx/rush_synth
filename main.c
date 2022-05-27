@@ -225,6 +225,7 @@ int main(int argc, char **argv)
 	}
 	close(fd);
 	play_melody(head_ptr, tracks);
-	free_list(head_ptr);
+	free(head_ptr);
+	//system("leaks minisynth");
 	return (0);
 }

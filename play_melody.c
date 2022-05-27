@@ -46,25 +46,6 @@ void	initialize_x_ar(float *x_ar, int track_nb)
 	}
 }
 
-t_node	**initialize_track_ar(t_node **head, int track_nb)
-{
-	int i;
-	t_node **tracks_ar;
-
-	i = 0;
-	tracks_ar = (t_node **)malloc((sizeof(t_node *) * track_nb));
-	if (!tracks_ar)
-		return (NULL);
-	while (i < track_nb)
-	{
-
-		tracks_ar[i] = head[i];
-		//printf("hey is is %d,  note freq is %f\n", i, tracks_ar[i]->frequency);
-		i++;
-	}
-	return (tracks_ar);
-}
-
 int	end_of_music(t_node **tracks_ar, int track_nb)
 {
 	int	i;
@@ -168,6 +149,7 @@ void	play_melody(t_node **head, int track_nb)
 	(void)x;
 	float	total_time;
 	t_node *list;
+	t_node *tmp;
 	list = head[0];
 	float	x_ar[track_nb];
 	(void)x_ar;
@@ -235,7 +217,10 @@ int l = 0;
 		update_notes_length(head, track_nb, shortest);
 
 		// move to next note (shortest)
-		head[shortest] = head[shortest]->next;
+		tmp = head[shortest]->next;
+		free(head[shortest]);
+		head[shortest] = NULL;
+		head[shortest] = tmp;
 		
 
 		l++;
