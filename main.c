@@ -168,12 +168,11 @@ void	read_input(char *str, int tempo, t_node **head)
 			len = beat;
 		len = (60 / (float)tempo * len);	// update beats to time
 		feed_to_list(&head[track - 1], tmp, len);
-		printf("(%s - %.3f)\t", tmp, len);
-
+		//printf("(%s - %.3f)\t", tmp, len);
 		while (str[i] == ' ' || str[i] == '|')	// skip delimiters
 			i++;
 	}
-	printf("\n");
+	//printf("\n");
 	free(tmp);
 }
 
@@ -220,7 +219,10 @@ int main(int argc, char **argv)
 			}
 		}
 		else
+		{
+			//printf("hey line is %s\n", ptr);
 			read_input(ptr, tempo, head_ptr);
+		}
 		free(ptr);
 	}
 	close(fd);

@@ -91,17 +91,17 @@ int	get_shortest(t_node **tracks_ar, int track_nb)
 		if (tracks_ar[i])
 		{
 			shortest = i;
-			break;
+			break ;
 		}
 		i++;
 	}
 	i = 0;
-	printf("hey3 track nb %d\n", track_nb);
+	//printf("hey3 track nb %d\n", track_nb);
 	while (i < track_nb)
 	{
 		if (tracks_ar[i])
 		{
-			printf("hey4 %d, len %f\n", i, tracks_ar[i]->len);
+			//printf("hey4 %d, len %f\n", i, tracks_ar[i]->len);
 			if (tracks_ar[i]->len < tracks_ar[shortest]->len)
 				shortest = i;
 		}
@@ -167,13 +167,16 @@ void	play_melody(t_node **head, int track_nb)
 	float x = 0;
 	(void)x;
 	float	total_time;
+	float	shortest_len;
 	t_node *list;
 	list = head[0];
-	t_node	**tracks_ar;
+	//t_node	**tracks_ar;
 	float	x_ar[track_nb];
+	(void)x_ar;
 
 	int	shortest;
 	(void)shortest;
+	(void)shortest_len;
 
 	int i;
 
@@ -196,48 +199,45 @@ void	play_melody(t_node **head, int track_nb)
 
 	//print_whole_file(head, track_nb);
 
-	tracks_ar = initialize_track_ar(head, track_nb);
+	//t_node **original_ptr = head;
+	//tracks_ar = initialize_track_ar(head, track_nb);
 	int h = 0;
 	while (h < track_nb)
 	{
-		printf("track nb %d, first note is %f len is %f\n", h, tracks_ar[h]->frequency, tracks_ar[h]->len);
+		if (head[h])
+			printf("track nb %d, first note is %f len is %f\n", h, head[h]->frequency, head[h]->len);
 		h++;
 	}
-	initialize_x_ar(x_ar, track_nb);
 
 	i = 0;
-	
+
 	int l = 0;
-	while (!end_of_music(tracks_ar, track_nb))
+	(void)l;
+	while (!end_of_music(head, track_nb))
 	{
-		printf("hey2\n");
+		printf("hey3\n");
 		// calc shortest note
-		shortest = get_shortest(tracks_ar, track_nb);
+		shortest = get_shortest(head, track_nb);
 		printf("shorstest is %d\n", shortest);
-		total_time += tracks_ar[shortest]->len;
+		shortest_len = head[shortest]->len;
+		total_time += shortest_len;
 
 		//queue everything
-		for (int p = 0; p < audio_spec.freq * tracks_ar[shortest]->len; p++) {
-
-			//int16_t sample = ((sin(x) + sin(x2) + sin(x3)) / 3) * 32000;
+		for (int p = 0; p < audio_spec.freq * shortest_len; p++) {
 			int16_t sample = get_sample(x_ar, track_nb);
-
-			update_x_ar(x_ar, tracks_ar, track_nb);
-
+			update_x_ar(x_ar, head, track_nb);
 			const int sample_size = sizeof(int16_t) * 1;
 			SDL_QueueAudio(audio_device, &sample, sample_size);
 		}
 
 		// update all the other notes length (all but shortest)
-		update_notes_length(tracks_ar, track_nb, shortest);
+		update_notes_length(head, track_nb, shortest);
 
 		// move to next note (shortest)
-		tracks_ar[shortest] = tracks_ar[shortest]->next;
+		head[shortest] = head[shortest]->next;
+
 		l++;
 	}
-
-
-
 	
 	/*while (list)
 	{
@@ -261,6 +261,7 @@ void	play_melody(t_node **head, int track_nb)
 
     SDL_CloseAudioDevice(audio_device);
     SDL_Quit();
+
 }
 
 
