@@ -276,13 +276,26 @@ void	tests_waves()
     SDL_Quit();
 }
 
+int    count_tracks(char *str)
+{
+    int res = 1;
+    int i = 6;
+
+    while (str[++i])
+    {
+        if (str[i] == ',')
+            res++;
+    }
+    return (res);
+}
+
 int main(int argc, char **argv)
 {
 	char	*ptr;
 	int		fd;
 	int		tracks = 0;
 	int 	tempo = 0;
-	int		wave[50];	// store 'triange' etc as values
+	int		*wave;
 	t_node	**head_ptr = NULL;
 
 	if (argc != 2)
@@ -303,7 +316,11 @@ int main(int argc, char **argv)
 		}
 		else if (strncmp(ptr, "tracks", 6) == 0)
 		{
-			tracks = tracks_line(ptr, wave);
+			tracks = count_tracks(ptr);
+			wave = (int *)malloc(sizeof(int) * tracks);
+			if (!wave)
+				return (0);
+            tracks = tracks_line(ptr, wave);
 
 			head_ptr = (t_node **)malloc(sizeof(t_node *) * tracks);
 			if (!head_ptr)
@@ -329,6 +346,7 @@ int main(int argc, char **argv)
 	play_melody(head_ptr, tracks, wave);
 	//tests_waves();
 	free(head_ptr);
+	free(wave);
 	//system("leaks minisynth");
 	return (0);
 }

@@ -193,7 +193,7 @@ void	play_melody(t_node **head, int track_nb, int *waves)
     SDL_zero(audio_spec);
     audio_spec.freq = 48000;
     audio_spec.format = AUDIO_S16SYS;
-    audio_spec.channels = 2;
+    audio_spec.channels = 1;
     audio_spec.samples = 1024;
     audio_spec.callback = NULL;
 
@@ -221,9 +221,6 @@ int l = 0;
 		shortest = get_shortest(head, track_nb);
 		//printf("shorstest is %d\n", shortest);
 		total_time += head[shortest]->len;
-
-		
-	
 
 		//queue everything
 		for (int p = 0; p < audio_spec.freq * head[shortest]->len; p++) {
