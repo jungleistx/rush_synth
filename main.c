@@ -12,8 +12,6 @@
 
 #include "minisynth.h"
 
-// tracks triangle,sine,sine,sine,sine,sine,sine,saw,saw,saw,saw,saw,saw,sine,sine,sine,sine,sine,triangle,triangle,triangle,square,square,square,kick,snare
-
 int	tracks_line(char *str, int *arr)
 {
 	int res = 0;
@@ -119,7 +117,6 @@ void	update_octave(char	*note, int octave)
 
 void	read_input(char *str, int tempo, t_node **head)
 {
-	// printf(" >>%s<< ", str);
 	int 	i = 0; 	// traverse str
 	int 	j = 0;	// buffer note
 	char 	*tmp;
@@ -151,9 +148,6 @@ void	read_input(char *str, int tempo, t_node **head)
 		if (tmp[1] >= '0' && tmp[1] <= '8')
 			octave = tmp[1] - '0';
 		update_octave(tmp, octave);
-
-		// add tmp data to correct track #
-		// tmp to frequenzy
 		i = j;
 		if (str[i++] == '/')	// get len
 		{
@@ -166,114 +160,10 @@ void	read_input(char *str, int tempo, t_node **head)
 			len = beat;
 		len = ((float)60.0 / (float)tempo * len);	// update beats to time
 		feed_to_list(&head[track - 1], tmp, len);
-		//printf("(%s - %.3f)\t", tmp, len);
 		while (str[i] == ' ' || str[i] == '|')	// skip delimiters
 			i++;
 	}
-	//printf("\n");
 	free(tmp);
-}
-
-void	tests_waves()
-{
-	SDL_Init(SDL_INIT_AUDIO);
-    // the representation of our audio device in SDL:
-    SDL_AudioDeviceID audio_device;
-
-    // opening an audio device:
-    SDL_AudioSpec audio_spec;
-    SDL_zero(audio_spec);
-    audio_spec.freq = 48000;
-    audio_spec.format = AUDIO_S16SYS;
-    audio_spec.channels = 2;
-    audio_spec.samples = 1024;
-    audio_spec.callback = NULL;
-
-    audio_device = SDL_OpenAudioDevice(NULL, 0, &audio_spec, NULL, 0);
-
-// sine
-	float x = 0;
-	float sin_x;
-		for (int i = 0; i < audio_spec.freq * 3; i++) {
-			sin_x = sin(x);
-			int16_t sample = sin_x * 32000;
-			if (i % 1560 == 0)
-				printf("hey sin  is %f\n", sin(x));
-			x += 440 * PI2 / 48000.0;
-			if(x >= PI2)
-				x -= PI2;
-			const int sample_size = sizeof(int16_t) * 1;
-			SDL_QueueAudio(audio_device, &sample, sample_size);
-		}
-
-// square
-	x = 0;
-		for (int i = 0; i < audio_spec.freq * 3; i++) {
-			sin_x = sin(x);
-			if (sin_x < 0)
-			{
-				sin_x = -1;
-			}
-			else
-			{
-				sin_x = 1;
-			}
-			int16_t sample = sin_x * 32000;
-			if (i % 1560 == 0)
-				printf("hey sin  is %f\n", sin(x));
-			x += 440 * PI2 / 48000.0;
-			if(x >= PI2)
-				x -= PI2;
-			const int sample_size = sizeof(int16_t) * 1;
-			SDL_QueueAudio(audio_device, &sample, sample_size);
-		}
-
-// triangle
-	x = 0;
-		for (int i = 0; i < audio_spec.freq * 3; i++) {
-			sin_x = asin(sin(x)) * (2.0 / M_PI);
-			int16_t sample = sin_x * 32000;
-			if (i % 1560 == 0)
-				printf("hey sin  is %f\n", sin(x));
-			x += 440 * PI2 / 48000.0;
-			if(x >= PI2)
-				x -= PI2;
-			const int sample_size = sizeof(int16_t) * 1;
-			SDL_QueueAudio(audio_device, &sample, sample_size);
-
-
-			// waveform[i] = *vol * asin(sin(frequency*t*2*M_PI)) * (2.0 / M_PI);
-			//waveform[i] = *vol * sin(frequency*t*2*M_PI);
-
-
-
-			    // if (!strcmp(tone, "sine"))
-				// {
-				// 	for(i=1; i < length; i++) 
-				// 	{
-				// 		double t = (double) i / WAVFILE_SAMPLES_PER_SECOND;
-				// 		//sine
-				// 		waveform[i] = *vol*sin(frequency*t*2*M_PI);
-				// 	}
-				// }
-				// if (!strcmp(tone, "triangle"))
-				// {
-				// 	for(i=1; i < length; i++) 
-				// 	{
-				// 		double t = (double) i / WAVFILE_SAMPLES_PER_SECOND;
-				// 		//triangle
-				// 		waveform[i] = *vol * asin(sin(frequency*t*2*M_PI)) * (2.0 / M_PI);
-				// 	}
-
-					
-    }
-
-	SDL_PauseAudioDevice(audio_device, 0);
-
-    SDL_Delay(9000);
-
-    SDL_CloseAudioDevice(audio_device);
-    SDL_Quit();
 }
 
 int    count_tracks(char *str)
@@ -336,17 +226,12 @@ int main(int argc, char **argv)
 			}
 		}
 		else
-		{
-			//printf("hey line is %s\n", ptr);
 			read_input(ptr, tempo, head_ptr);
-		}
 		free(ptr);
 	}
 	close(fd);
 	play_melody(head_ptr, tracks, wave);
-	//tests_waves();
 	free(head_ptr);
 	free(wave);
-	//system("leaks minisynth");
 	return (0);
 }

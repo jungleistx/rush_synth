@@ -77,12 +77,10 @@ int	get_shortest(t_node **tracks_ar, int track_nb)
 		i++;
 	}
 	i = 0;
-	//printf("hey3 track nb %d\n", track_nb);
 	while (i < track_nb)
 	{
 		if (tracks_ar[i])
 		{
-			//printf("hey4 %d, len %f\n", i, tracks_ar[i]->len);
 			if (tracks_ar[i]->len < tracks_ar[shortest]->len)
 				shortest = i;
 		}
@@ -140,7 +138,6 @@ int16_t get_sample(float *x_ar, int track_nb, int *waves)
 	{
 		sin_value = get_sin_value(x_ar[i], i, waves);
 		sin_sum += sin_value;
-		//sin_sum += sin(x_ar[i]);
 		i++;
 	}
 	sample = sin_sum / track_nb * 32000;
@@ -168,20 +165,13 @@ void	update_x_ar(float *x_ar, t_node **tracks_ar, int track_nb)
 
 void	play_melody(t_node **head, int track_nb, int *waves)
 {
-	float x = 0;
-	(void)x;
 	float	total_time;
 	t_node *list;
 	t_node *tmp;
 	list = head[0];
 	float	x_ar[track_nb];
-	(void)x_ar;
-
 	int	shortest;
-	(void)shortest;
-
 	int i;
-
 
 	total_time = 0;
 	SDL_Init(SDL_INIT_AUDIO);
@@ -199,27 +189,15 @@ void	play_melody(t_node **head, int track_nb, int *waves)
 
     audio_device = SDL_OpenAudioDevice(NULL, 0, &audio_spec, NULL, 0);
 
-	//print_whole_file(head, track_nb);
-
-
-	int h = 0;
-	while (h < track_nb)
-	{
-		if (head[h])
-			printf("track nb %d, first note is %f len is %f\n", h, head[h]->frequency, head[h]->len);
-		h++;
-	}
-
 	initialize_x_ar(x_ar, track_nb);
 
 	i = 0;
 
-int l = 0;
 	while (!end_of_music(head, track_nb))
 	{
 		// calc shortest note
 		shortest = get_shortest(head, track_nb);
-		//printf("shorstest is %d\n", shortest);
+
 		total_time += head[shortest]->len;
 
 		//queue everything
@@ -241,38 +219,13 @@ int l = 0;
 		free(head[shortest]);
 		head[shortest] = NULL;
 		head[shortest] = tmp;
-		
-
-		l++;
 	}
-
-
-
-	
-	/*while (list)
-	{
-		x = 0;
-		for (int i = 0; i < audio_spec.freq * list->len; i++) {
-			int16_t sample = sin(x) * 32000;
-			x += list->frequency * PI2 / 48000.0;
-			if(x >= PI2)
-				x -= PI2;
-			const int sample_size = sizeof(int16_t) * 1;
-			SDL_QueueAudio(audio_device, &sample, sample_size);
-		}
-		total_time += list->len;
-		list = list->next;
-	}*/
 
 	SDL_PauseAudioDevice(audio_device, 0);
 
-	printf("total time is %f\n", total_time);
     SDL_Delay(total_time * 1000);
 
     SDL_CloseAudioDevice(audio_device);
     SDL_Quit();
 
 }
-
-
-// gcc -Wall -Werror -Wextra main.c get_frequency.c play_melody.c  -I ./include -L libft -lft -L lib -lSDL2

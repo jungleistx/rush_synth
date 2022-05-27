@@ -1,7 +1,7 @@
 # Cantina Band - John Williams
 # Converted from MIDI
 
-tempo 90
+tempo 120
 tracks sine,sine,triangle,triangle,triangle,square,square,square,square,square,square,square,square,square,saw,saw,saw,sine
 
 # Track 1: channel 1 (Synth Bass 2), 2 voices

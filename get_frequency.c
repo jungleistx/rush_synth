@@ -65,7 +65,6 @@ float get_frequency(char *note)
 			octave = atoi(&note[1]);
 	}
 	frequency = get_note(note) * pow(2, octave);
-	//printf("octave is %d\n", octave);
 	return (frequency);
 }
 
