@@ -106,18 +106,41 @@ void	update_notes_length(t_node **tracks_ar, int track_nb, int shortest)
 	}
 }
 
-int16_t get_sample(float *x_ar, int track_nb)
+float	get_sin_value(float x, int i, int *waves)
+{
+	float	sin_value;
+
+	sin_value = 0.0;
+	if (waves[i] == 2 || waves[i] == 4) // saw & triangle
+	{
+		sin_value = asin(sin(x)) * (2.0 / M_PI);
+	}
+	else if (waves[i] == 3) // square
+	{
+		sin_value = sin(x) < 0 ? -1 : 1;
+	}
+	else
+	{
+		sin_value = sin(x);
+	}
+	return (sin_value);
+}
+
+int16_t get_sample(float *x_ar, int track_nb, int *waves)
 {
 	int	i;
 	int16_t	sample;
 	double	sin_sum;
-	
+	float	sin_value;
+
 	i = 0;
 	sample = 0;
 	sin_sum = 0.0;
 	while (i < track_nb)
 	{
-		sin_sum += sin(x_ar[i]);
+		sin_value = get_sin_value(x_ar[i], i, waves);
+		sin_sum += sin_value;
+		//sin_sum += sin(x_ar[i]);
 		i++;
 	}
 	sample = sin_sum / track_nb * 32000;
@@ -143,7 +166,7 @@ void	update_x_ar(float *x_ar, t_node **tracks_ar, int track_nb)
 	}
 }
 
-void	play_melody(t_node **head, int track_nb)
+void	play_melody(t_node **head, int track_nb, int *waves)
 {
 	float x = 0;
 	(void)x;
@@ -205,7 +228,7 @@ int l = 0;
 		//queue everything
 		for (int p = 0; p < audio_spec.freq * head[shortest]->len; p++) {
 
-			int16_t sample = get_sample(x_ar, track_nb);
+			int16_t sample = get_sample(x_ar, track_nb, waves);
 
 			update_x_ar(x_ar, head, track_nb);
 
