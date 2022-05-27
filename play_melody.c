@@ -212,10 +212,9 @@ void	play_melody(t_node **head, int track_nb)
 int l = 0;
 	while (!end_of_music(head, track_nb))
 	{
-		printf("hey3\n");
 		// calc shortest note
 		shortest = get_shortest(head, track_nb);
-		printf("shorstest is %d\n", shortest);
+		//printf("shorstest is %d\n", shortest);
 		total_time += head[shortest]->len;
 
 		

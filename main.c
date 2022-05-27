@@ -130,7 +130,6 @@ void	read_input(char *str, int tempo, t_node **head)
 	octave = 4;
 	beat = 1.0;
 
-
 	tmp = (char*) malloc(4);
 	if (!tmp)
 	{
@@ -139,23 +138,22 @@ void	read_input(char *str, int tempo, t_node **head)
 	}
 
 	int track = atoi((const char*)&str[i]);	// add data to correct list
-	while (isdigit(str[i]) != 0 || str[i] == ' ' || str[i] == ':' || str[i] == '|')
+	while (str[i] && (isdigit(str[i]) != 0 || str[i] == ' ' || str[i] == ':' || str[i] == '|'))
 		i++;	// skip beginning
 
 	while (str[i])
 	{
 		tmp[0] = 0, tmp[1] = 0, tmp[2] = 0, tmp[3] = 0;
 		j = i;
-		while (str[j] != '/' && str[j] != ' ')	// buffer for note
+		while (str[j] && str[j] != '/' && str[j] != ' ')	// buffer for note
 			j++;
 		tmp = strncpy(tmp, (const char*)&str[i], (size_t)(j-i));	// copy note to tmp
 		if (tmp[1] >= '0' && tmp[1] <= '8')
 			octave = tmp[1] - '0';
 		update_octave(tmp, octave);
 
-			// add tmp data to correct track #
-			// tmp to frequenzy
-
+		// add tmp data to correct track #
+		// tmp to frequenzy
 		i = j;
 		if (str[i++] == '/')	// get len
 		{
