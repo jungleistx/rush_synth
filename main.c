@@ -74,7 +74,6 @@ void	fill_node(t_node *list, char *note, float len)
 {
 	list->frequency = get_frequency(note);
 	list->len = len;
-	//printf("len is %f \n", tempo / 60 * len);
 	list->next = NULL;
 }
 
@@ -166,9 +165,7 @@ void	read_input(char *str, int tempo, t_node **head)
 				i++;
 		}
 		else
-		{
 			len = beat;
-		}
 		len = (60 / (float)tempo * len);	// update beats to time
 		feed_to_list(&head[track - 1], tmp, len);
 		printf("(%s - %.3f)\t", tmp, len);
@@ -178,41 +175,6 @@ void	read_input(char *str, int tempo, t_node **head)
 	}
 	printf("\n");
 	free(tmp);
-}
-
-void	print_list(t_node *head)
-{
-	t_node *list;
-
-	list = head;
-	while (list)
-	{
-		printf("'%f' - '%f'\t", list->frequency, list->len);
-		list = list->next;
-	}
-	printf("\n");
-}
-
-
-
-void	free_list(t_node **head)
-{
-	t_node *tmp;
-
-	if (!*head)
-	{
-		return ;
-	}
-	else
-	{
-		while ((*head)->next)
-		{
-			tmp = *head;
-			*head = (*head)->next;
-			free(tmp);
-		}
-		free(*head);
-	}
 }
 
 int main(int argc, char **argv)
@@ -229,7 +191,6 @@ int main(int argc, char **argv)
 	fd = open(argv[1], O_RDONLY);
 	if (fd == -1)
 		return (0);
-
 	while (get_next_line(fd, &ptr) == 1)
 	{
 		if (ptr[0] == '#' || strlen(ptr) == 0)

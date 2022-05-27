@@ -32,5 +32,8 @@ typedef struct s_node {
 
 float get_frequency(char *note);
 void	play_melody(t_node **list, int track_nb);
+void	print_list(t_node *head);
+int strings_match(char *str1, char *str2, int char_nb);
+void	free_list(t_node **head);
 
 #endif

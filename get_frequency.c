@@ -12,40 +12,33 @@
 
 #include "minisynth.h"
 
-int notes_match(char *note1, char *note2, int char_nb)
-{
-	if (strncmp(note1, note2, char_nb) == 0)
-		return (1);
-	return (0);
-}
-
 double	get_note(char *note)
 {
 	double frequency = 0.0;
 
-	if (notes_match("c", note, 1))
+	if (strings_match("c", note, 1))
 		frequency = 16.35160;
-	if (notes_match("c#", note, 2))
+	if (strings_match("c#", note, 2))
 		frequency = 17.32391;
-	if (notes_match("d", note, 1))
+	if (strings_match("d", note, 1))
 		frequency = 18.35405;
-	if (notes_match("d#", note, 2))
+	if (strings_match("d#", note, 2))
 		frequency = 19.44544;
-	if (notes_match("e", note, 1))
+	if (strings_match("e", note, 1))
 		frequency = 20.60172;
-	if (notes_match("f", note, 1))
+	if (strings_match("f", note, 1))
 		frequency = 21.82676;
-	if (notes_match("f#", note, 2))
+	if (strings_match("f#", note, 2))
 		frequency = 23.12465;
-	if (notes_match("g", note, 1))
+	if (strings_match("g", note, 1))
 		frequency = 24.49971;
-	if (notes_match("g#", note, 2))
+	if (strings_match("g#", note, 2))
 		frequency = 25.95654;
-	if (notes_match("a", note, 1))
+	if (strings_match("a", note, 1))
 		frequency = 27.50000;
-	if (notes_match("a#", note, 2))
+	if (strings_match("a#", note, 2))
 		frequency = 29.13524;
-	if (notes_match("b", note, 1))
+	if (strings_match("b", note, 1))
 		frequency = 30.86771;
 	return (frequency);
 }
