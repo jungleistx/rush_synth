@@ -12,16 +12,7 @@
 
 #include "minisynth.h"
 
-// typedef struct	s_node
-// {
-// 	float 			len;
-// 	// char			*tone;
-// 	float			frequency;
-// 	struct	s_node	*next;
-// }				t_node;
-
 // tracks triangle,sine,sine,sine,sine,sine,sine,saw,saw,saw,saw,saw,saw,sine,sine,sine,sine,sine,triangle,triangle,triangle,square,square,square,kick,snare
-
 
 int	tracks_line(char *str, int *arr)
 {
@@ -82,7 +73,6 @@ int	tracks_line(char *str, int *arr)
 void	fill_node(t_node *list, char *note, float len)
 {
 	list->frequency = get_frequency(note);
-	// list->len = tempo / 60 * len;
 	list->len = len;
 	//printf("len is %f \n", tempo / 60 * len);
 	list->next = NULL;
@@ -90,20 +80,15 @@ void	fill_node(t_node *list, char *note, float len)
 
 void	feed_to_list(t_node **head, char *note, float len)
 {
-	t_node	*list;
 	t_node	*list_ptr;
 	t_node	*list_new;
 
-	// list = *head;
-	// while (list->next)
-	// 	list = list->next;
 	if (!*head)
 	{
-		list = (t_node *)malloc(sizeof(t_node));
-		if (!list)
+		*head = (t_node *)malloc(sizeof(t_node));
+		if (!*head)
 			return ;
-		*head = list;
-		fill_node(list, note, len);
+		fill_node(*head, note, len);
 	}
 	else
 	{
@@ -121,12 +106,11 @@ void	feed_to_list(t_node **head, char *note, float len)
 void	update_octave(char	*note, int octave)
 {
 	size_t	len;
-	(void)octave;
 
 	len = strlen(note);
 	if (len == 1)
 	{
-		//*note[1] = octave + '0';
+		note[1] = octave + '0';
 	}
 	if ((len == 2 && note[1] == '#'))
 	{
@@ -135,14 +119,13 @@ void	update_octave(char	*note, int octave)
 }
 
 void	read_input(char *str, int tempo, t_node **head)
-// void	read_input(char *str, int tempo)
 {
 	// printf(" >>%s<< ", str);
 	int 	i = 0; 	// traverse str
 	int 	j = 0;	// buffer note
 	char 	*tmp;
 	float 	len = 0.0;
-	int	octave;
+	int		octave;
 	float beat;
 
 	octave = 4;
@@ -156,8 +139,6 @@ void	read_input(char *str, int tempo, t_node **head)
 		return ;
 	}
 
-// a a4 a# a#4 a/1
-
 	int track = atoi((const char*)&str[i]);	// add data to correct list
 	while (isdigit(str[i]) != 0 || str[i] == ' ' || str[i] == ':' || str[i] == '|')
 		i++;	// skip beginning
@@ -168,12 +149,10 @@ void	read_input(char *str, int tempo, t_node **head)
 		j = i;
 		while (str[j] != '/' && str[j] != ' ')	// buffer for note
 			j++;
-		// printf(" >> i = %d, j = %d, ", i, j);
 		tmp = strncpy(tmp, (const char*)&str[i], (size_t)(j-i));	// copy note to tmp
 		if (tmp[1] >= '0' && tmp[1] <= '8')
 			octave = tmp[1] - '0';
 		update_octave(tmp, octave);
-		// printf("'%s', ", tmp);
 
 			// add tmp data to correct track #
 			// tmp to frequenzy
@@ -191,18 +170,11 @@ void	read_input(char *str, int tempo, t_node **head)
 			len = beat;
 		}
 		len = (60 / (float)tempo * len);	// update beats to time
-	
-			// printf("%p\n", head_ptr);
-			// printf("%p\n", &head_ptr[0]);
-			// printf("%p\n", *head_ptr);
-			// printf("%p\n", head_ptr[1]);
-
 		feed_to_list(&head[track - 1], tmp, len);
 		printf("(%s - %.3f)\t", tmp, len);
 
 		while (str[i] == ' ' || str[i] == '|')	// skip delimiters
 			i++;
-		// printf("%f << \n", len);
 	}
 	printf("\n");
 	free(tmp);
@@ -285,44 +257,12 @@ int main(int argc, char **argv)
 				head_ptr[k] = NULL;
 				k++;
 			}
-			// printf("%p\n", head_ptr);
-			// printf("%p\n", &head_ptr[0]);
-			// printf("%p\n", *head_ptr);
-			// printf("%p\n", head_ptr[1]);
-			// printf("%p\n", &head_ptr);
-			// t_node ptr[tracks];
 		}
 		else
-		{
-			// int channel = atoi((const char*)&ptr[0]);
-			// printf("	aaaaa	");
 			read_input(ptr, tempo, head_ptr);
-			// read_input(ptr, tempo);
-			// read_input(ptr, tempo);
-			// printf("	ccccc	");
-		}
-		// printf("%s\n", ptr);
 		free(ptr);
 	}
 	close(fd);
-	// int xx = 0;
-	// while (xx < tracks)
-	// {
-	// 	print_list(head_ptr[xx]);
-	// 	free_list(&head_ptr[xx]);
-	// 	xx++;
-	// }
-
-
-				// test printing
-	// int x = 0;
-	// while (x < tracks)
-	// {
-	// 	printf("%d ", wave[x]);
-	// 	x++;
-	// }
-	// printf("\ntempo %d, tracks = %d\n", tempo, tracks);
-
 	play_melody(head_ptr, tracks);
 	free(head_ptr);
 	return (0);
