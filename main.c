@@ -198,11 +198,11 @@ int main(int argc, char **argv)
 			free(ptr);
 			continue ;
 		}
-		if (strncmp((const char*)ptr, "tempo", 5) == 0)
+		if (strncmp(ptr, "tempo", 5) == 0)
 		{
-			tempo = atoi((const char*)&ptr[6]);
+			tempo = atoi(&ptr[6]);
 		}
-		else if (strncmp((const char*)ptr, "tracks", 6) == 0)
+		else if (strncmp(ptr, "tracks", 6) == 0)
 		{
 			tracks = tracks_line(ptr, wave);
 
@@ -225,6 +225,6 @@ int main(int argc, char **argv)
 	}
 	close(fd);
 	play_melody(head_ptr, tracks);
-	free(head_ptr);
+	free_list(head_ptr);
 	return (0);
 }
